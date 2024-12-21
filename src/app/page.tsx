@@ -1,10 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { client, urlFor } from "./lib/sanity";
+import { client } from "@/lib/sanity";
 import Image from "next/image";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
-import { simpleBlogCard } from "./lib/interface";
+import { ISimpleBlogCard } from "@/types/data"
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -12,29 +11,27 @@ async function getData() {
   const query = `
   *[_type == 'blog'] | order(_createdAt desc) {
     title,
-      smallDescription,
-      "currentSlug": slug.current,
-        "titleImage": titleImage.asset->url
-
+    smallDescription,
+    "currentSlug": slug.current,
+    "titleImage": titleImage.asset->url
   }`;
 
   // titleImage
 
   const data = await client.fetch(query);
-
   return data;
 }
 
 export default async function Home() {
-  const data: simpleBlogCard [] = await getData();
-
+  const data: ISimpleBlogCard[] = await getData();
   console.log(data);
-return(
+
+  return (
     <div className="grid grid-cols-1  md:grid-cols-2 mt-5 gap-5">
       {data.map((post, idx) => (
         <Card key={idx}>
           <Image
-            src={urlFor(post.titleImage).url()}
+            src={post.titleImage}
             alt="image"
             width={500}
             height={500}

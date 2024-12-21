@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { ThemeProvider } from './components/theme-provider'
-import Navbar from './components/Navbar'
+import { ThemeProvider } from '@/components/theme-provider'
+import Navbar from '@/components/navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,24 +18,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        
-    
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+      <body
+        className={inter.className}
+        cz-shortcut-listen="true"
+        // data-qb-extension-installed="true"  // if more errors come, you can try this out
+        // data-qb-installed="true"
+      >
 
-            <Navbar/>
-        
-       <main className='max-w-2 mx-auto px-4'>{children}</main> 
-        
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+
+          <Navbar />
+          <main className='max-w-2xl mx-auto px-4'>{children}</main>
+
         </ThemeProvider>
-        
-        
-        </body>
+
+      </body>
     </html>
   )
 }

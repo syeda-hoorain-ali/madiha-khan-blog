@@ -1,7 +1,5 @@
-
-
-import { fullBlog } from "@/app/lib/interface";
-import { client, urlFor } from "@/app/lib/sanity";
+import { IFullBlog } from "@/types/data";
+import { client, urlFor } from "@/lib/sanity";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 
@@ -10,11 +8,12 @@ export const revalidate = 30; // revalidate at most 30 seconds
 async function getData(slug: string) {
   const query = `
     *[_type == "blog" && slug.current == '${slug}'] {
-        "currentSlug": slug.current,
-          title,
-          content,
-          titleImage
-      }[0]`;
+      "currentSlug": slug.current,
+      title,
+      content,
+      titleImage
+    }[0]
+  `;
 
   const data = await client.fetch(query);
   return data;
@@ -23,10 +22,12 @@ async function getData(slug: string) {
 export default async function BlogArticle({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>
 }) {
-  const data: fullBlog = await getData(params.slug);
-console.log(data);
+  const { slug } = await params
+  const data: IFullBlog = await getData(slug);
+  console.log(data);
+
   return (
     <div className="mt-8">
       <h1>
@@ -49,7 +50,7 @@ console.log(data);
 
       <div className="mt-16 prose prose-blue prose-lg dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
         <PortableText value={data.content} />
-      </div> 
+      </div>
     </div>
   );
 }
